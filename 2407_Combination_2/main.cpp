@@ -25,15 +25,27 @@ string add(string a, string b) {
     return ret;
 }
 
-string C(int n, int m) {
+string C_recur(int n, int m) {
     if(n == m || m == 0)
         return "1";
     if(!dp[n][m].empty())
         return dp[n][m];
-    return dp[n][m] = add(C(n-1, m), C(n-1, m-1));
+    return dp[n][m] = add(C_recur(n-1, m), C_recur(n-1, m-1));
+}
+
+string C_for() {
+    for(int i=0;i<=N;++i)
+        dp[i][0] = "1";
+    for(int j=1;j<=M;++j) {
+        for(int i=1;i<=N;++i){
+            dp[i][j] = add(dp[i-1][j], dp[i-1][j-1]);
+        }
     }
+    return dp[N][M];
+}
 
 int main() {
     cin >> N >> M;
-    cout << C(N,M);
+    cout << C_recur(N, M) << endl;
+    cout << C_for();
 }
