@@ -2,22 +2,16 @@
 using namespace std;
 
 int tree[10001];
-
-void postorder(int start, int end){
-    if(start == end) return;
-    if(start+1 == end){
-        printf("%d\n", tree[start]);
-        return;
-    }
-    int right = start+1;
-    for(;right<end && tree[right]<tree[start];right++);
-    postorder(start+1, right);
-    postorder(right, end);
-    printf("%d\n", tree[start]);
+int e = 0;
+void pOrder(int s, int e) {
+    if(s == e) return;
+    int r = s+1;
+    for(; r<e && tree[r]<tree[s]; r++);
+    pOrder(s+1, r);
+    pOrder(r, e);
+    printf("%d\n", tree[s]);
 }
-
 int main(){
-    int N = 0;
-    for(; scanf("%d", tree+N)>0; N++);
-    postorder(0, N);
+    for(;scanf("%d", tree+e) > 0;e++);
+    pOrder(0, e);
 }
