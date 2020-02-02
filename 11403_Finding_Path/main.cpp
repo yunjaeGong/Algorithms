@@ -1,42 +1,33 @@
-#include <iostream>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 using namespace std;
- 
-int arr[100][100]={0};
-int visited[100]={0};
+
+bool map[100][100], res[100][100], visited[100];
 int n;
- 
-void dfs(int j){
-    for(int k=0;k<n;k++){
-        if(arr[j][k] && !visited[k]){
-            visited[k]++;
-            dfs(k);
+
+void dfs(int j, bool res[]){
+    for(int k=0;k<n;k++)
+        if(map[j][k] && !visited[k]) {
+            visited[k] = true;
+            res[k] = true;
+            dfs(k, res);
         }
-    }
 }
-int main(){
-    
-    cin>>n;
-    
+
+int main() {
+    scanf("%d", &n);
     for(int i=0;i<n;i++)
         for(int j=0;j<n;j++)
-            scanf("%d",&arr[i][j]);
+            scanf("%d",&map[i][j]);
     
-    for(int i=0;i<n;i++){
+    for(int i=0;i<n;i++) {
         memset(visited,0,sizeof(visited));
-        dfs(i);
-        
-        for(int j=0;j<n;j++){
-            if(visited[j])
-                arr[i][j]=1;
-        }
+        dfs(i, res[i]);
     }
     
-    for(int i=0;i<n;i++){
+    for(int i=0;i<n;i++) {
         for(int j=0;j<n;j++)
-            cout<<arr[i][j]<<" ";
-        
-        cout<<endl;
+            printf("%d ", res[i][j]);
+        printf("%c", '\n');
     }
-    return 0;
 }
