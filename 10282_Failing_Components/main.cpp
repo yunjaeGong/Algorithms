@@ -8,6 +8,7 @@ int N, M, C;
 int dist[10001];
 int main() {
     int T, u, v, w, cnt, time;
+    cin.tie(NULL), cout.tie(NULL), ios_base::sync_with_stdio(false);
     const int MAX = 1<<30;
     cin >> T;
     while(T--) {
@@ -16,20 +17,20 @@ int main() {
         fill(dist, dist+N+1, MAX);
         vector<pii> V[N+1];
         priority_queue<pii, vector<pii>, greater<>> Q;
-        Q.push({C,});
+        Q.push({C, 0});
         for(int i=0;i<M;++i) {
             cin >> u >> v >> w;
             V[v].push_back({u,w});
         }
         dist[C] = 0;
         while(!Q.empty()) {
-            pii cur = Q.front();
+            pii cur = Q.top();
             Q.pop();
             for(pii adj: V[cur.f]) {
-                if(dist[adj.f] < dist[cur] + adj.s)
+                if(dist[adj.f] <= dist[cur.f] + adj.s)
                     continue;
-                dist[adj.f] = dist[cur] + adj.s;
-                Q.push(adj.f);
+                dist[adj.f] = dist[cur.f] + adj.s;
+                Q.push({adj.f, dist[adj.f]});
             }
         }
         for(int i=1;i<=N;++i) {
