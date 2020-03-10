@@ -14,15 +14,14 @@ bool bound(int x, int y) {return x>=0&&x<n&&y>=0&&y<m;}
 void dfs(int x, int y, queue<pii> &Q) {
     rooms[y][x] = rNum;
     area++;
+    if(wall[y][x])
+        Q.push({x,y});
     for(int i=0;i<4;++i) {
+        if(wall[y][x] & (1<<i))
+            continue;
         int nx = x + dx[i], ny = y + dy[i];
-
         if(!bound(nx, ny) || rooms[ny][nx] != 0)
             continue;
-        if(wall[y][x] & (1<<i)) {
-            Q.push({x,y});
-            continue;
-        }
         dfs(nx, ny, Q);
     }
 }
@@ -43,34 +42,30 @@ int main() {
             areas.push_back(area);
             maxArea = max(area, maxArea);
             rNum++;
-            // Q.push({i, j}); // 엣지에 위치한 모든 정점 추가해야! -> DFS에서
         }
-
-    for(int i=0;i<m;++i) {
-        for(int j=0;j<n;++j)
-            cout << rooms[i][j] << " ";
-        cout << '\n';
-    }
 
     set<int> S[rNum];
     bool visited[50][51];
     memset(visited, 0, sizeof(visited));
-    while(!Q.empty()) {
-        pii cur = Q.front();
-        Q.pop();
-        int x = cur.s, y = cur.f;
-        visited[y][x] = true;
-        for(int i=0;i<4;++i) {
-            int nx = x + dx[i], ny = y + dy[i];
-            if(!bound(nx, ny) || rooms[ny][nx] == rooms[y][x]) // visited 수정 필요할지도
-                continue;
-            S[rooms[y][x]].insert(rooms[ny][nx]);
+    int bArea = 0;
+    for(int y=0;y<m;++y) {
+        for(int x=0;x<n;++x) {
+            for(int i=0;i<4;++i) {
+                int nx = x + dx[i], ny = y + dy[i];
+                if(!bound(nx, ny) || rooms[ny][nx] == rooms[y][x]) // visited 수정 필요할지도
+                    continue;
+                if(wall[y][x] & (1<<i)) {
+                    S[rooms[y][x]].insert(rooms[ny][nx]);
+                    S[rooms[ny][nx]].insert(rooms[y][x]);
+                }
+            }
         }
     }
-    int bArea = 0;
+
     for(int i=1;i<rNum;++i) {
         for(int e:S[i])
-        bArea = max(bArea, areas[i-1]+areas[e-1]);
+            if(e != i)
+                bArea = max(bArea, areas[i-1]+areas[e-1]);
     }
     printf("%d\n%d\n%d", rNum-1, maxArea, bArea);
 }
