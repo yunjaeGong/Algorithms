@@ -1,30 +1,37 @@
-#include <iostream>
+#include <cstdio>
+#include <vector>
 #include <algorithm>
-int N, M;
 using namespace std;
-int P[9];
-int used[10001];
-void swap(int &a, int &b) {int t=a;a=b;b=t;}
-void permu(int i) { // top down
-    for(int j=i;j<=N;++j) { // j번째부터 시작
-        swap(P[i],P[j]);
-        if(used[P[i]])
-            continue;
-        if(i == M) { // i가 k이면 nPk 완성
-            for(int l=1;l<=M;++l)
-                printf("%d ",P[l]);
-            printf("\n");
-        } // 출력
-        used[P[i]] = true;
-        permu(i+1);
-        used[P[i]] = false;
-        swap(P[i],P[j]); // 원래 상태로 만들어야 이후 j+1번째부터 시작하는 순열 생성 가능
+int N, M;
+vector<int> v;
+bool check[8];
+int nums[8];
+
+void permu(int dep){
+    if (dep == M){
+        for (int i=0;i<M;++i) printf("%d ", nums[i]);
+        printf("\n");
+        return;
+    }
+    bool used[10001] {false};
+    for (int i=0; i<v.size(); ++i){
+        if (used[v[i]] || check[i]) continue;
+        used[v[i]] = true;
+        nums[dep] = v[i];
+        check[i] = true;
+        permu(dep + 1);
+        check[i] = false;
     }
 }
+
 int main() {
-    cin >> N >> M;
-    for(int i=1;i<=N;++i)
-        cin >> P[i];
-    sort(P+1,P+N+1);
-    permu(1);
+    scanf("%d %d", &N, &M);
+    int val;
+    for (int i=0; i<N; ++i) {
+        scanf("%d", &val);
+        v.push_back(val);
+    }
+    sort(v.begin(), v.end());
+    permu(0);
+    return 0;
 }
