@@ -1,54 +1,30 @@
 #include <iostream>
-#include <vector>
-#include <queue>
 using namespace std;
 int N, K, T;
-int indegree[401];
-bool G[401][401];
-vector<int> res;
-bool visited[401], linked[401];
-void topoloticalSort() {
-    queue<int> Q;
+int map[401][401];
 
-    for(int i=1;i<=N;++i)
-        if(linked[i] && indegree[i] == 0) {
-            res.push_back(i);
-            Q.push(i);
-        }
-    while(!Q.empty()) {
-        int cur = Q.front();
-        Q.pop();
-        for(int adj=1;adj<=N;++adj) {
-            if(!G[cur][adj]) continue;
-            if(indegree[adj] >= 1)
-                indegree[adj]--;
-            if(indegree[adj] == 0) {
-                Q.push(adj);
-                res.push_back(adj);
-            }
-            G[cur][adj] = false;
-            Q.push(adj);
-        }
-    }
-}
 int main() {
+    cin.tie(NULL);cout.tie(NULL);ios::sync_with_stdio(false);
     int u, v;
     cin >> N >> K;
     for(int i=0;i<K;++i) {
         cin >> u >> v;
-        G[u][v] = true;
-        indegree[v]++;
-        linked[v] = true;
-        linked[u] = true;
+        map[u][v] = -1;
+        map[v][u] = 1;
     }
-    topoloticalSort();
+    for(int k=1;k<=N;++k) {
+        for(int i=1;i<=N;++i) {
+            for(int j=1;j<=N;++j) {
+                if(map[i][j] == 0) { // 경로가 없다면
+                    if(map[i][k] == 1 && map[k][j] == 1) map[i][j] = 1; // 거꾸로 된 순서
+                    else if(map[i][k] == -1 && map[k][j] == -1) map[i][j] = -1;
+                }
+            }
+        }
+    }
     cin >> T;
-    for(int e:res)
-        cout << e << " ";
     for(int i=0;i<T;++i) {
         cin >> u >> v;
-        // res
+        cout << map[u][v] << '\n';
     }
-
-
 }
