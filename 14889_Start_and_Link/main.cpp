@@ -7,7 +7,7 @@ bool visited[20];
 vector<int> vis_s;
 void dfs(int cur, int dep) {
     if(dep == N/2) {
-        int sum_start, sum_link;
+        int sum_start=0, sum_link=0;
         vector<int> vis_l;
 
         for(int i=0;i<N;++i) {
@@ -15,9 +15,12 @@ void dfs(int cur, int dep) {
             vis_l.push_back(i);
         }
         int len = vis_l.size();
-        for(int i=0;i<len;++i) {
-            sum_start = arr[vis_s[i]][vis_s[(i+1)%len]];
-            sum_link = arr[vis_l[i]][vis_l[(i+1)%len]];
+        for(int i=0;i<len;i++) {
+            for(int j=0;j<len;j++) {
+                if(i == j) continue;
+                sum_start += arr[vis_s[i]][vis_s[j]];
+                sum_link += arr[vis_l[i]][vis_l[j]];
+            }
         }
         MIN = min(MIN, abs(sum_start-sum_link));
         return;
@@ -27,15 +30,15 @@ void dfs(int cur, int dep) {
         visited[i] = true;
         vis_s.push_back(i);
         dfs(i, dep+1);
+        vis_s.pop_back();
         visited[i] = false;
     }
 }
 int main() {
     cin >> N;
-
     for(int i=0;i<N;++i)
         for(int j=0;j<N;++j)
             cin >> arr[i][j];
-    dfs(0,0);
+    dfs(-1,0);
     cout << MIN;
 }
