@@ -6,32 +6,33 @@
 using namespace std;
 int N, M, res;
 short map[50][50];
-vector<pii> c, h, selected;
 bool visited[13];
-int dist(pii &a, pii &b) {
-    int y = a.f-b.f, x = a.s-b.s;
-    return  y<0?-y:y + x<0?-x:x;
-}
+vector<pii> c, h, selected;
+int dist(pii &a, pii &b) { return abs(a.f-b.f) + abs(a.s-b.s); }
 int calc() {
     int sum = 0;
-    for(int i=0;i<h.size();++i) {
+    for(pii home:h) {
         int d = 1<<30;
-        for(int j=0;j<c.size();++j) {
-            d = min(d, dist(h[i], c[j]));
+        for(pii sel:selected) {
+            d = min(d, dist(home, sel));
         }
         sum += d;
     }
+    return sum;
 }
 
 void select(int idx, int cnt) {
     if(cnt >= M) { // 최대 M개 -> M개 다 쓰면 최소
         res = min(res, calc());
+        return;
     }
     for(int i=idx;i<c.size();++i) {
         if(visited[i]) continue;
         visited[i] = true;
+        selected.push_back(c[i]);
         select(i+1, cnt+1);
         visited[i] = false;
+        selected.pop_back();
     }
 }
 
@@ -49,4 +50,5 @@ int main() {
 
     res = 1<<30;
     select(0, 0);
+    cout << res;
 }
