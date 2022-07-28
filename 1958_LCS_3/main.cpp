@@ -32,7 +32,7 @@ int main() {
                     /*int MAX = max(dp[i-1][j][k], dp[i][j-1][k]);
                     MAX = max(MAX, dp[i][j][k-1]);
                     dp[i][j][k] = MAX;*/
-                    
+
                     dp[i][j][k] = max<int>({dp[i-1][j][k], dp[i][j-1][k], dp[i][j][k-1]});
                 }
             }
